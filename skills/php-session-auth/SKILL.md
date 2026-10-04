@@ -3,6 +3,11 @@ name: php-session-auth
 description: Use when building login, registration, logout, or session handling in vanilla PHP (no framework) with CSRF-protected forms — covers password hashing, secure session config, session fixation, CSRF tokens, brute-force lockout, and user-enumeration defense
 ---
 
+> **Scope (2026-10-04):** this skill is for a **standalone product** — one that signs people in itself. An application of
+> the MaluDB Business OS has **no login form, no password and no account of its own**: the kernel signs people in with a
+> hand-off token (`os-application` skill; `maludb-os-integration` → `php-sign-on-kit.md`). A product that must do both
+> keeps everything here behind `OS_ENABLED=0` and sends every path into a session to the kernel's launcher when the flag is on.
+
 # Vanilla PHP Session Auth + CSRF
 
 ## Overview

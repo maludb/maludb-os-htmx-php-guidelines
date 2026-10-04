@@ -64,6 +64,19 @@ Conventions:
 - **Auth:** per-client bearer tokens issued by the application (revocable, stored hashed, checked by the MCP service on every request). SaaS Plus+ gives each client a dedicated database, so the endpoint's credentials scope to exactly one client's memory — tenant isolation at the database level, not the query level.
 - Clients connect their own tools (Claude Desktop, Claude Code, their agents) to these endpoints. Publish the two URLs plus token instructions in the app's settings screen.
 
+## Beside the Business OS kernel (every application from us)
+
+The two read servers are what the kernel's agents reach (`maludb-os-integration`, `mcp-and-api.md`). Beyond a person's
+own token, accept: the **kernel's token** (`kernel.{exp}.{app_key}.{nonce}.{hmac}` over `ACTION_TOKEN_KEY`), admitted to
+one tool, `app_roles` (the roles and the rights each gives, `os.app-roles/1`, from the schema's catalogue); an **agent's
+run token** (`{member}.{exp}.{run}.{hmac}` over `"run:…"`), admitted to exactly the tools the kernel's run-facts call
+names for this endpoint — a token the kernel does not vouch for lists and calls nothing; a **person's action token**
+(`{member}.{exp}.{hmac}`). Ship `find_<entity>` resolvers answering `{"rows": [{"<entity>_id", "label"}]}` for every
+entity an action names — the kernel's actions server resolves labels through them. On `mcp` 1.x copy the kernel's
+`db.py` and `server_common.py`; on 2.x, Cidery's `services/common/os_kernel.py` (`maludb-os-cidery`) wraps
+`MCPServer.list_tools`/`call_tool`. Ports come from `config/.env` (`MCP_RECORDS_PORT`, `MCP_ACTIVITY_PORT`); the installer
+assigns them.
+
 ## Testing
 
 - Exercise every tool with **MCP Inspector** (`npx @modelcontextprotocol/inspector`) before wiring the AMA agent to it.

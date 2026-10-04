@@ -84,3 +84,10 @@ The baseline comfortably carries a server-rendered CRUD SaaS, which is most of t
 | Traffic or data volume beyond a single Apache/Postgres pair | Managed hosting, replicas, caching |
 
 The two memories never change with scale: PostgreSQL stays the record memory, MaluDB stays the activity memory, and the AMA agent keeps working regardless of which tier the app runs on.
+
+## The Business OS (2026-10-04)
+
+Every application from us is an application of the MaluDB Business OS kernel unless the user says otherwise: installed at
+`/srv/apps/<key>` by the kernel's installer from `maludb-os.json`, signed in by the kernel (no login form), its roles
+granted by the kernel as a set, its memories in the tenant's one MaluDB, its expert run by the kernel. The deltas against
+a standalone product are the `os-application` skill; the contract is the `maludb-os-integration` plugin.

@@ -16,6 +16,7 @@ Before starting, load context from the sibling skills in this plugin:
 - **php-session-auth** — security rules for the auth build in Phase 2.
 - **malumail-send** — the default email channel (MaluMail API) for reset/verification emails and notifications. Consult in Phase 2 and wherever a feature sends mail.
 - **chat-actions** — the voice-first command bar on every screen: LLM router → actions MCP server → the app's own endpoints. Consult in Phase 1 (action manifest), Phase 2 (command bar in the shell), and Phase 4 (assistant service).
+- **os-application** — how the application fits the MaluDB Business OS kernel from day one (the default for every application from us): `config/.env`, `/srv/apps/<key>`, the kernel's sign-on instead of a login form, roles as a set, the kernel's action-manifest shape and JSON-mode handlers, the MCP servers' kernel contract, the command bar through the kernel's chat endpoint, `maludb-os.json`. Consult in Phase 0 (decide OS application or standalone), and it changes Phases 1, 2 and 4 as its table says. The contract itself is the `maludb-os-integration` plugin.
 
 ## The stack (fixed — do not reopen unless the user does)
 
@@ -26,8 +27,8 @@ Before starting, load context from the sibling skills in this plugin:
 | Activity memory | MaluDB (PostgreSQL extensions), fed by application logs |
 | Memory interface | Two client-facing read MCP servers per app (Python + FastMCP), per the mcp-servers skill |
 | Action interface | One localhost-only actions MCP server per app (navigation + app actions), per the chat-actions skill |
-| Assistant | One unified Claude Agent SDK service (Python) — AMA answers, chat actions, navigation |
-| Web server | Apache (also reverse-proxies the MCP servers and AMA service) |
+| Assistant | **OS application:** the kernel runs the application's expert (the command bar posts to the kernel's chat endpoint; no model key in the app). **Standalone:** one unified Claude Agent SDK service (Python) — AMA answers, chat actions, navigation |
+| Web server | Apache (also reverse-proxies the MCP servers and, standalone, the AMA service); an OS application lives at `/srv/apps/<key>` behind `deploy/` templates the kernel's installer renders |
 | Application | PHP (vanilla, per php-patterns skill) |
 | UI | Bootstrap 5.3 per the design-system skill |
 | Interactivity | HTMX partial updates |
@@ -41,6 +42,7 @@ Plan the application with the user using the memory-first-planning skill: decide
 1. The memory model — entities, facts, relationships.
 2. The question list — the record questions (answered from PostgreSQL) and activity questions (answered from MaluDB logs) the application exists to answer. Features are pre-packaged answers to these questions.
 3. The feature list, ordered for Phase 3 vertical slices.
+4. **OS application or standalone product** (the os-application skill): the catalog key, the scope kind, the roles and the rights each gives. The default is an OS application.
 
 **Checkpoint:** user approves the memory model and feature order.
 
@@ -53,7 +55,8 @@ Design the complete database up front — every table for every planned feature,
 3. Include the MaluDB extension setup and ingestion wiring.
 4. Every table gets created_at/updated_at and, where rows are user-owned, the owning user id. Use `bigint generated always as identity` primary keys unless the user specifies otherwise.
 5. **Design the MCP tool surface** (per the mcp-servers skill): map every question from the Phase 0 question list to a named tool on the record or activity server, plus one guarded read-only search tool per server. Define the read-only database roles the servers will use. The question list is the contract — a question with no tool is unfinished design.
-6. **Design the action manifest** (per the chat-actions skill): the screen registry (every screen's id, canonical URL, "when the user wants…" description) and the action registry (every performable action with its endpoint, parameters, undo definition, and confirm flag). A screen or action missing from the manifest is unreachable by voice — unfinished design, same as an unanswered question.
+6. **Design the action manifest** (per the chat-actions skill): the screen registry (every screen's id, canonical URL, "when the user wants…" description) and the action registry (every performable action with its endpoint, parameters, undo definition, and confirm flag). A screen or action missing from the manifest is unreachable by voice — unfinished design, same as an unanswered question. For an OS application the action table has the kernel's eight columns (`Action · File · Params · Undo · Confirm · Agent approval · Log · Who`), a path parameter is written by its entity's name (`/vessels/{vessel}/status`), and `bin/build_action_registry.php` produces `mcp/action_registry.json`.
+7. **Draft `maludb-os.json`** (OS application): catalog key, vhost label, database roles, env keys, services, endpoints, the roles catalogue in the schema (`app_rights`, `app_roles`, `app_role_rights`), the expert's job description and tool grants. The kernel's installer will install from it; writing it now keeps the design honest.
 
 **Checkpoint:** user approves the full schema, the MCP tool surface, *and* the action manifest before any PHP is written.
 
@@ -61,7 +64,7 @@ Design the complete database up front — every table for every planned feature,
 
 Goal: at the end of this phase the application *looks and feels exactly like the finished product*, with working login, even though it has no features yet.
 
-1. Build session auth (register, login, logout, reset) in vanilla PHP following the **php-session-auth** skill — all of its non-negotiables apply. The login page offers email/password **and** "Sign in with Google" (server-side OIDC per `references/google-signin.md`); authenticator-app 2FA (per `references/totp-2fa.md`) ships with its enrollment settings page and login challenge page. CSRF is wired for HTMX from the first shell render (meta tag + `htmx:configRequest` listener). Reset and verification emails go through the **malumail-send** skill's `malumail_send()` helper. Auth pages use the design-system minimal auth layout; login/logout/2FA are full page navigations, never swaps.
+1. **OS application:** build the kernel's sign-on instead of a login — `/sso` and `/sso/logout` from `php-sign-on-kit.md`, the directory mirror and its one-minute sync, the per-request guard, `/api/v1/health`, and `deploy/` templates; prove it with `bin/dev_handoff.php` (os-application). **Standalone product only:** build session auth (register, login, logout, reset) in vanilla PHP following the **php-session-auth** skill — all of its non-negotiables apply. The login page offers email/password **and** "Sign in with Google" (server-side OIDC per `references/google-signin.md`); authenticator-app 2FA (per `references/totp-2fa.md`) ships with its enrollment settings page and login challenge page. CSRF is wired for HTMX from the first shell render (meta tag + `htmx:configRequest` listener). Reset and verification emails go through the **malumail-send** skill's `malumail_send()` helper. Auth pages use the design-system minimal auth layout; login/logout/2FA are full page navigations, never swaps.
 2. Build the application shell from the **design-system** skill: the sidebar/header/footer layout, the HTMX content-swap target, an empty dashboard, the navigation stubs for every planned feature, and the **assistant command bar** (`#assistant-bar`, per chat-actions, with Send shown only while the bar is in use) wired to a stub handler so the surface exists from the first screen. Ship the shell's form guard script and the shared page-header partial that marks form headers `page-header-form` (design-system) now, so every slice's forms get the pinned Save and the unsaved-changes prompt for free.
 3. Wire activity logging into the shell from the first request: page entry, login/logout events.
 4. Verify on a mobile viewport (375px): navigation collapses correctly, no horizontal scroll, no modals anywhere.
@@ -84,7 +87,7 @@ Build one feature at a time, end-to-end, in the order fixed in Phase 0. Each sli
 
 1. **Build the two read MCP servers** designed in Phase 1 (record memory + activity memory) per the mcp-servers skill: Python + FastMCP, read-only roles, systemd units, Apache reverse proxy, per-client bearer tokens. Verify every Phase 0 question is answerable through the tools using MCP Inspector before moving on.
 2. **Build the actions MCP server** from the Phase 1 action manifest per the chat-actions skill: localhost-only, `navigate` + per-action tools calling the app's own endpoints with signed action tokens, undo support.
-3. **Build the unified assistant** — one Claude Agent SDK service (Python) with all three MCP servers, per [references/ama-implementation.md](references/ama-implementation.md) and chat-actions: the AMA page for full conversations, the command bar on every screen for voice actions and navigation. The agent reads memories and performs actions only through MCP.
+3. **OS application:** no assistant service and no actions server of the app's own — the command bar posts to the kernel's chat endpoint, the kernel's actions server executes the registry; the two read servers accept the kernel's token (`app_roles`) and agents' run tokens (os-application). **Standalone product:** build the unified assistant — one Claude Agent SDK service (Python) with all three MCP servers, per [references/ama-implementation.md](references/ama-implementation.md) and chat-actions: the AMA page for full conversations, the command bar on every screen for voice actions and navigation. The agent reads memories and performs actions only through MCP.
 4. **Verify by utterance:** every manifest action and every screen reachable with a one-sentence spoken-style command; every Phase 0 question answerable.
 5. **Publish the client-facing endpoints**: a settings screen listing the two read-MCP URLs and managing access tokens, so clients can connect their own AI tools to their memories (SaaS Plus+). The actions server is never exposed.
 

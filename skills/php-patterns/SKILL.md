@@ -17,7 +17,7 @@ Every application uses the **feature-oriented Page Controller pattern** defined 
 | Fragment view | `app/views/{feature}/partials/*.php` |
 | Infrastructure | `app/bootstrap.php`, `app/db.php`, `app/http.php` |
 
-Vertical slices: one feature = one `/var/www/html/{feature}/` endpoint set + one `/var/www/app/features/{feature}/queries.php` + one `/var/www/app/views/{feature}/` view set. **The web root is `/var/www/html`** (Apache's default DocumentRoot on Ubuntu 24.04) — build the application there, not in a `public/` directory; `app/` and `config/` sit beside `html/` under `/var/www/`, outside the DocumentRoot, and must never be placed inside it. **No classes for controllers, repositories, services, DTOs, or entities** — extract shared procedural helpers only when duplication becomes substantial.
+Vertical slices: one feature = one `/var/www/html/{feature}/` endpoint set + one `/var/www/app/features/{feature}/queries.php` + one `/var/www/app/views/{feature}/` view set. **The web root is `html/` under the application root** — `/srv/apps/<key>/html` for an application of the Business OS (the kernel's installer puts the repository at `/srv/apps/<key>` and renders the vhost), `/var/www/html` for a standalone product on a bare Ubuntu 24.04 host — build the application there, not in a `public/` directory; `app/` and `config/` sit beside `html/`, outside the DocumentRoot, and must never be placed inside it. Configuration is `config/.env` (`env()`), the file the kernel's installer writes; `config/application.php` holds defaults and maps env keys onto them. **No classes for controllers, repositories, services, DTOs, or entities** — extract shared procedural helpers only when duplication becomes substantial.
 
 ## Controller sequence (every endpoint)
 

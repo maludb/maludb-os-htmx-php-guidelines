@@ -26,8 +26,22 @@ Unified assistant service — Python, Claude Agent SDK (the SAME agent as AMA)
 
 - **One unified assistant.** The AMA page and the command bar are two surfaces of the same Agent SDK service: read tools (record/activity MCP servers), action tools, and navigation. One conversation memory per user; questions, actions, and navigation mix freely in a single utterance.
 - **The router is the LLM; the tools are MCP.** The agent never navigates or writes by itself — it activates a tool on the actions MCP server. Tool descriptions carry the routing knowledge (which screen/action serves which intent), so routing quality is a Phase 1 design artifact, not prompt luck.
-- **Actions go through the app's own controllers.** The actions server's tools call the same `/var/www/html/{feature}/save.php`-style endpoints a human uses — same validation, same authorization, same activity logging. The **read MCP servers stay strictly read-only**; nothing ever writes around the PHP layer.
+- **Actions go through the app's own controllers.** The actions server's tools call the same `html/{feature}/save.php`-style endpoints a human uses — same validation, same authorization, same activity logging. The **read MCP servers stay strictly read-only**; nothing ever writes around the PHP layer.
 - **The actions server is localhost-only** — unlike the client-facing read servers, it acts *as a user* and is reachable only by the assistant service. Per-request authority comes from a short-lived HMAC-signed action token minted by the PHP handler (user id + expiry); internal endpoints accept it in place of the session and enforce the same authorization.
+
+## Beside the Business OS kernel (every application from us)
+
+When the application is an application of the MaluDB Business OS (the os-application skill, the default), **the
+assistant is the kernel's, not the application's**: the command bar posts the utterance to the kernel's chat endpoint
+(`POST {OS_INTERNAL_URL}/api/v1/agents/chat.php?agent=expert`, the application token, `X-Acting-Member`), the kernel runs ONE
+turn of the application's expert with the application's tools attached, every model call ledgered, approvals paused in
+the kernel's queue, and answers the reply and the actions taken. The application holds no model key and ships no
+assistant service and no actions server; the **kernel's actions server** turns the application's registry
+(`mcp/action_registry.json`, built from the manifest) into tools that POST the application's own handlers on its
+loopback port with the tenant's signed token — so handlers answer in **JSON mode** (`emit_action_status()`,
+`{ok, location}` / 422 `{error}`) as well as HTMX. The UI, the manifest discipline and everything below about
+utterances, context and `HX-Trigger` refreshes are unchanged; only who runs the model and the tools moves. A product
+that must also run standalone keeps its own service behind `OS_ENABLED=0`.
 
 ## The action manifest (designed in Phase 1)
 

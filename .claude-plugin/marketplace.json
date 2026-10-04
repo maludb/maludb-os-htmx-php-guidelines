@@ -1,5 +1,5 @@
 {
-  "name": "maludb-ed",
+  "name": "maludb-os-htmx-php-guidelines",
   "owner": {
     "name": "Edward Honour"
   },
@@ -7,7 +7,7 @@
     {
       "name": "htmx-php-builder",
       "source": "./",
-      "description": "Builds memory-first HTMX + PHP + Bootstrap 5.3 applications with a consistent design system, a fixed phased build order, and an Ask Me Anything feature in every app"
+      "description": "Builds memory-first HTMX + PHP + Bootstrap 5.3 applications with a consistent design system, a fixed phased build order, an Ask Me Anything feature in every app, and a fit to the MaluDB Business OS kernel from the first commit"
     }
   ]
 }
