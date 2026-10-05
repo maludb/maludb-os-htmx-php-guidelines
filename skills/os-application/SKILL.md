@@ -21,6 +21,9 @@ disagree, `maludb-os-integration` wins — it is the kernel's word.
   `<tenant>_<key>`, the roles `<key>_rw`, `<key>_records_ro`, `<key>_activity_ro`.
 - **Scope kind**: `none` (one business), `location` (per site), `department`.
 - **The roles and the rights each gives**, in the application's words — published to the kernel, granted there as a SET.
+- **Which of its tables the estate already has.** Survey the sibling applications' schemas (`/srv/apps/*/db/*.sql`) before
+  the memory model is final; every table is `read` (another application's data, through the kernel), `reuse` (the
+  canonical definition verbatim) or `new` (`maludb-os-integration`, `shared-schema.md`).
 
 ## What changes in each phase
 
@@ -28,6 +31,7 @@ disagree, `maludb-os-integration` wins — it is the kernel's word.
 |---|---|---|
 | Configuration | `config/application.php` + `config/local.php`; `services.env` for Python | **`config/.env`** read by PHP (`env()`) and Python alike — the kernel's installer writes it (`DB_*`, `MCP_*_PORT`, `APP_INTERNAL_PORT`, `ACTION_TOKEN_KEY`, `ACTIONS_RELAY_KEY`, `OS_*`, `MALUDB_*`). Keep `application.php` for defaults; map env keys onto it. |
 | Root | `/var/www`, web root `/var/www/html` | `/srv/apps/<key>`, web root `/srv/apps/<key>/html`; every unit and vhost in `deploy/` is a **template** with `{{APP_DIR}}`, `{{APP_FQDN}}`, `{{APP_INTERNAL_PORT}}`, `{{MCP_RECORDS_PORT}}`, `{{MCP_ACTIVITY_PORT}}` |
+| Schema (Phase 1) | designed from the domain alone | **designed against the estate**: a table a sibling application already has is reused verbatim (same name, columns, types; extend by appending only); data another application owns is read through the kernel's K7, never copied; a new table is the last resort and becomes canonical. The definition still lives in THIS repository's `db/*.sql` — installations differ in which applications they hold, and the installer creates every table from here (`shared-schema.md`, with the catalogue of canonical tables) |
 | Database | one database per client, an operator registry, `provision-client.sh` | one database per **tenant** (the installer creates it and the three roles, runs `db/*.sql` in order as postgres). If the schema needs more (files as the app role, an extension's memory schema, a seed row), ship an idempotent `deploy/os-provision.sh` and name it `database.provision` |
 | Identity (Phase 2) | `php-session-auth`: password + TOTP + Google, invitations, reset, a users admin | **No login form.** `/sso` receives the kernel's hand-off (verify two signatures, TTL, audience, single-use nonce), mirrors the member (`members`, `department_members` with the kernel's ids — or, standalone-too, `users.os_member_id`), opens the app's own hardened session; `/sso/logout` ends the member's sessions; a directory sync every minute; people and roles are never created in the application. Copy the receivers from `php-sign-on-kit.md`. |
 | Roles | `users.role`, one value | the kernel grants a **set**: `members.roles text[]` (or `users.os_roles`); gates ask for a right (`app_has_right('pay.write')`), the catalogue lives in the database and is published by `app_roles` |
@@ -50,5 +54,7 @@ install.
   while `OS_ENABLED` is on in a standalone-too product.
 - Never a model key in the application; never a call to a model from it.
 - Never a connection to the kernel's database; MaluDB episodes, MCP, the hand-off token and the kernel's endpoints are the only crossings.
+- Never a new shape for a table a sibling application already keeps, and never a migration that depends on a sibling being
+  installed (no `\i` of its files, no reference into its database, no look at its install path).
 - Never fail open on an agent's grants or an unknown member id.
 - Ports, hostnames and keys come from `config/.env`; nothing that differs per tenant is a constant in code or in `deploy/`.

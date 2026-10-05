@@ -50,15 +50,26 @@ Plan the application with the user using the memory-first-planning skill: decide
 
 Design the complete database up front — every table for every planned feature, not just the first slice.
 
+**Survey the estate before designing a table** (OS application; `maludb-os-integration`'s `shared-schema.md`). The
+applications of the Business OS share one data model across their separate databases. List every table the sibling
+applications already have (`/srv/apps/*/db/*.sql` on the build server, or the `maludb-os-<key>` repositories) and
+decide each planned table against them: **read** — another application owns the data (HR's employment, the
+ledger's parties, Help Desk's tickets …), so hold at most its id and reach it through the kernel's K7 read, never a
+copy; **reuse** — the same concept and your own rows (attachments, notes, notifications, sequences, billing
+documents …), so copy the canonical definition verbatim into your own `db/` file and extend only by appending;
+**new** — nothing is close, and yours becomes the canonical table. The definition always lives in this application's
+own migrations: installations differ in which applications they hold, and the installer creates every table from
+this repository alone.
+
 1. Write one SQL file per concern under `db/` (e.g. `db/001_auth.sql`, `db/002_core.sql`, …) targeting PostgreSQL 17. The auth schema always includes the Google-identity and TOTP-2FA structures from the php-session-auth skill's references (`auth_identities`, nullable `password_hash`, `totp_*` columns, recovery codes) — they ship in every app even if a project enables the features later.
 2. Design the **activity log** from day one: a log table (and/or file stream) capturing every screen entered, record created, and action taken by every actor, in the shape MaluDB ingests. Activity memory cannot be backfilled — logging exists before the first feature ships.
 3. Include the MaluDB extension setup and ingestion wiring.
-4. Every table gets created_at/updated_at and, where rows are user-owned, the owning user id. Use `bigint generated always as identity` primary keys unless the user specifies otherwise.
+4. Every table gets created_at/updated_at and, where rows are user-owned, the owning user id. Use `bigint generated always as identity` primary keys unless the user specifies otherwise. Every table in the design document carries its provenance — `read: <app>.<tool>`, `reuse: <app>/db/NNN_x.sql` (+ appended columns) or `new` (why nothing fit) — and a reused table keeps the canonical name, columns and types exactly.
 5. **Design the MCP tool surface** (per the mcp-servers skill): map every question from the Phase 0 question list to a named tool on the record or activity server, plus one guarded read-only search tool per server. Define the read-only database roles the servers will use. The question list is the contract — a question with no tool is unfinished design.
 6. **Design the action manifest** (per the chat-actions skill): the screen registry (every screen's id, canonical URL, "when the user wants…" description) and the action registry (every performable action with its endpoint, parameters, undo definition, and confirm flag). A screen or action missing from the manifest is unreachable by voice — unfinished design, same as an unanswered question. For an OS application the action table has the kernel's eight columns (`Action · File · Params · Undo · Confirm · Agent approval · Log · Who`), a path parameter is written by its entity's name (`/vessels/{vessel}/status`), and `bin/build_action_registry.php` produces `mcp/action_registry.json`.
 7. **Draft `maludb-os.json`** (OS application): catalog key, vhost label, database roles, env keys, services, endpoints, the roles catalogue in the schema (`app_rights`, `app_roles`, `app_role_rights`), the expert's job description and tool grants. The kernel's installer will install from it; writing it now keeps the design honest.
 
-**Checkpoint:** user approves the full schema, the MCP tool surface, *and* the action manifest before any PHP is written.
+**Checkpoint:** user approves the full schema (every table's provenance stated: read, reuse or new), the MCP tool surface, *and* the action manifest before any PHP is written.
 
 ## Phase 2 — Authentication and application shell
 

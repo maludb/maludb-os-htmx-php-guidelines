@@ -32,7 +32,7 @@ Ubuntu 24.04 · PostgreSQL 17 + MaluDB (activity memory) · three MCP servers pe
 
 | Skill | Purpose |
 |---|---|
-| `new-app` | The phased build workflow: memory-first planning → full database + memory design → auth + app shell → vertical feature slices → Ask Me Anything |
+| `new-app` | The phased build workflow: memory-first planning → full database + memory design (surveying the sibling applications' schemas first — one data model across the estate) → auth + app shell → vertical feature slices → Ask Me Anything |
 | `new-screen` | Generates each screen from the design system so consistency holds screen-to-screen |
 | `mcp-servers` | The two MCP servers every app ships (record + activity memory): tool-surface design, FastMCP implementation, deployment, client-facing auth |
 | `design-system` | The mandatory UI template distilled into layout skeletons, component patterns, and mobile rules |
@@ -41,12 +41,12 @@ Ubuntu 24.04 · PostgreSQL 17 + MaluDB (activity memory) · three MCP servers pe
 | `php-session-auth` | Security rules for vanilla PHP session auth + CSRF, Google sign-in, TOTP 2FA |
 | `malumail-send` | Transactional email via the MaluMail API — the default email channel for every app |
 | `chat-actions` | The voice-first command bar on every screen: LLM router → actions MCP server → the app's own endpoints (voice-to-data, voice-to-navigation); beside the kernel, the kernel runs the assistant |
-| `os-application` | How an application fits the MaluDB Business OS kernel from day one: config/.env, /srv/apps/<key>, the kernel's sign-on, roles as a set, the kernel's manifest shape and JSON-mode handlers, the MCP servers' kernel contract, the command bar through the kernel, maludb-os.json |
+| `os-application` | How an application fits the MaluDB Business OS kernel from day one: config/.env, /srv/apps/<key>, the kernel's sign-on, roles as a set, the kernel's manifest shape and JSON-mode handlers, the MCP servers' kernel contract, the command bar through the kernel, maludb-os.json; the schema designed against the estate (reuse a sibling's table verbatim, read owned data through the kernel, every table created from this repository alone) |
 
 ## Build order (enforced by new-app)
 
 1. **Phase 0** — memory-first planning (memory model, question list, feature order)
-2. **Phase 1** — database design for the ENTIRE application + activity-log/MaluDB design + the MCP tool surface + the action manifest (logging exists from day one)
+2. **Phase 1** — database design for the ENTIRE application, against the estate's existing tables (read / reuse / new for every table) + activity-log/MaluDB design + the MCP tool surface + the action manifest (logging exists from day one)
 3. **Phase 2** — authentication + application shell incl. the assistant command bar (after this phase the app looks exactly as intended, on desktop and at 375px mobile)
 4. **Phase 3** — vertical feature slices, one at a time, each registered in the action manifest
 5. **Phase 4** — the three MCP servers, the unified assistant (AMA + chat actions + navigation), and the client-facing read-MCP endpoints

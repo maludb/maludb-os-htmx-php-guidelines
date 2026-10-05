@@ -1,11 +1,18 @@
 {
   "name": "htmx-php-builder",
-  "version": "0.6.0",
-  "description": "Builds memory-first HTMX + PHP + Bootstrap 5.3 applications with a consistent design system, a fixed phased build order, an Ask Me Anything feature in every app, and — by default — a fit to the MaluDB Business OS kernel from the first commit (os-application)",
+  "version": "0.7.0",
+  "description": "Builds memory-first HTMX + PHP + Bootstrap 5.3 applications with a consistent design system, a fixed phased build order, an Ask Me Anything feature in every app, and — by default — a fit to the MaluDB Business OS kernel from the first commit (os-application), its schema designed against the estate's existing tables (one data model across the applications' separate databases)",
   "author": {
     "name": "Edward Honour"
   },
   "license": "MIT",
   "repository": "https://github.com/maludb/maludb-os-htmx-php-guidelines",
-  "keywords": ["php", "htmx", "bootstrap", "postgres", "maludb", "memory-first"]
+  "keywords": [
+    "php",
+    "htmx",
+    "bootstrap",
+    "postgres",
+    "maludb",
+    "memory-first"
+  ]
 }
