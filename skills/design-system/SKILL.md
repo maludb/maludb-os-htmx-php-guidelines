@@ -14,6 +14,7 @@ Every screen in every application must look like it came from the same template,
 - [references/components.md](references/components.md) — canonical markup for page headers, cards, list/table pages, create/edit forms, detail pages, buttons, badges, avatars, tabs.
 - [references/auth-layout.html](references/auth-layout.html) — the auth-page skeleton (login/register/reset use this, minimal style).
 - [references/assets.md](references/assets.md) — which CSS/JS files each page includes and in what order.
+- `components.md` "Header: the application switcher" — the Helpdesk button and the applications dropdown every OS application's header carries (PHP in `examples/php/app-switcher/`; the contract is the integration plugin's `sign-on-and-directory.md` §8).
 - [references/record-picker.md](references/record-picker.md) — **how a form chooses a record** (a supplier, an item, a person — anything with its own list screen): the searchable modal that replaces a `<select>` of every row; the field, the endpoint, the registry, the helper, the retrofit steps. The PHP files are in `examples/php/record-picker/`.
 - [examples/](examples/) — a working, trimmed example application: the shell (`index.html`), HTMX partials for the list/form/view screens, the auth page, and the actual theme CSS/JS/font assets. **Copy `examples/assets/` into every new application verbatim** — this is what guarantees pixel-identical styling. Use the example pages as the starting point for Phase 2's shell and for each screen type.
 

@@ -144,6 +144,28 @@
             <div class="header-right ms-auto">
                 <div class="d-flex align-items-center">
                     <!-- User avatar dropdown -->
+                    <!-- APPLICATION SWITCHER (OS applications only; components.md "Header: the application switcher"; the PHP partial that
+                         renders this from the kernel's feed is examples/php/app-switcher/): the Helpdesk button — only when the person holds
+                         the Help Desk and this is not it — and the dropdown of every application they may open, the current one marked.
+                         Every link leaves this application through the launcher's /launch/<id>: a full navigation, never an HTMX swap. -->
+                    <div class="nxl-h-item">
+                        <a href="https://app.example.com/launch/57" class="nxl-head-link me-0 header-helpdesk" id="header-helpdesk-btn" title="Help Desk"><i class="feather-life-buoy"></i><span class="d-none d-sm-inline">Helpdesk</span></a>
+                    </div>
+                    <div class="dropdown nxl-h-item">
+                        <a href="javascript:void(0);" class="nxl-head-link me-0" data-bs-toggle="dropdown" role="button" data-bs-auto-close="outside" id="header-apps-toggle" aria-label="Your applications" title="Your applications"><i class="feather-grid"></i></a>
+                        <div class="dropdown-menu dropdown-menu-end nxl-h-dropdown header-apps-menu" id="header-apps-menu">
+                            <div class="dropdown-header"><h6 class="text-dark mb-0">Your applications</h6></div>
+                            <div class="dropdown-divider"></div>
+                            <div class="header-apps-list" id="header-apps-list">
+                                <a href="https://app.example.com/launch/57" class="dropdown-item" id="header-apps-item-57"><i class="feather-life-buoy"></i><span>Help Desk</span></a>
+                                <span class="dropdown-item active" id="header-apps-item-50" aria-current="page"><i class="feather-trello"></i><span>Projects</span></span>
+                                <a href="https://app.example.com/launch/56?scope=3" class="dropdown-item" id="header-apps-item-56-3"><i class="feather-calendar"></i><span>txtSchedules <span class="text-muted">· Downtown</span></span></a>
+                            </div>
+                            <div class="dropdown-divider"></div>
+                            <a href="https://app.example.com/" class="dropdown-item" id="header-apps-launcher"><i class="feather-layout"></i><span>All applications</span></a>
+                            <a href="https://os.example.com" class="dropdown-item" id="header-apps-os"><i class="feather-cpu"></i><span>Operating system</span></a>
+                        </div>
+                    </div>
                     <div class="dropdown nxl-h-item">
                         <a id="header-profile-toggle" href="javascript:void(0);" data-bs-toggle="dropdown" role="button" data-bs-auto-close="outside">
                             <img src="assets/images/avatar/1.png" alt="user-image" class="img-fluid user-avtar me-0" />

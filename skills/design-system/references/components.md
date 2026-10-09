@@ -130,6 +130,20 @@ page header, not at the bottom of the form**, and a form page's header is a **pi
   edited, which reveals the badge and rings Save, and asks before any navigation away. Save button
   labels name the record ("Save Customer"), never a bare "Send"/"Submit".
 
+## Header: the application switcher (OS applications)
+
+Inside `div.header-right > div.d-flex`, before the dark-mode toggle, an application under the Business OS kernel carries
+two items: the **Helpdesk** button (`a.nxl-head-link.header-helpdesk#header-helpdesk-btn`, icon + the word, icon only
+below `sm`; shown only when the person holds the Help Desk and this is not it) and the **applications dropdown**
+(`div.dropdown.nxl-h-item` with `feather-grid`, `#header-apps-toggle` / `#header-apps-menu`): a header "Your applications",
+a scrolling `.header-apps-list` with one `dropdown-item` per application the person may open — one per scope for a scoped
+application ("txtSchedules · Downtown"), the current application marked `active` and not a link — then "All applications"
+(the launcher) and, for a super-admin, "Operating system". Every link is a full navigation through the launcher's
+`/launch/<id>` (`?scope=<id>`), never an HTMX swap. Ids: `header-apps-item-{id}` / `-{id}-{scope}`, `header-apps-launcher`,
+`header-apps-os`. The markup is in the layout skeleton; the PHP partial that renders it from the kernel's feed
+(`GET /api/v1/apps/mine.php`, cached five minutes in the session) is `examples/php/app-switcher/`; standalone it renders
+nothing. It replaces the earlier ad-hoc "All applications" icon.
+
 ## Card container pattern
 
 Usage: every content block is a plain `.card` inside a grid column, as tall as its content. Never add

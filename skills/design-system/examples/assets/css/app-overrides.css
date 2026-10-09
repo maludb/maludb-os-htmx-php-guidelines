@@ -151,3 +151,10 @@ html.app-skin-dark #record-picker .record-picker-search { background: #0f172a; }
     #record-picker .modal-dialog { max-width: 560px; }
     #record-picker .modal-content { height: 70vh; }
 }
+
+/* APPLICATION SWITCHER (shared/app-switcher.php, K31): the Helpdesk button is a head link with a word beside the icon;
+   the applications menu lists one row per application (or per scope) with the current one marked, not linked. */
+.nxl-header .header-right .nxl-head-link.header-helpdesk { width: auto; gap: 6px; padding-left: 14px; padding-right: 14px; font-size: 12px; font-weight: 600; text-transform: uppercase; }
+.header-apps-menu { min-width: 260px; }
+.header-apps-menu .header-apps-list { max-height: calc(100vh - 260px); overflow-y: auto; }
+.header-apps-menu .dropdown-item.active { background: var(--bs-primary-bg-subtle, rgba(59, 130, 246, .12)); color: inherit; cursor: default; }
