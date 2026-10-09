@@ -93,7 +93,7 @@ the no-modal rule (D1).
 
 ## The build order
 
-**Status (2026-10-09):** approved as recommended; step 1 BUILT and live (ProcessCore commit 99d978e: 46 HTTP checks, 19 browser checks); step 2 the plugin 0.8.0 BUILT the same day; step 3 the cidery LIVE (c4e1c64, 55 + 19); step 4 by Sonnet workers in worktrees the same day — Projects 159280d (80 + 23), HR 34ae1bd (76 + 18), GL fa3d7b0 (167 incl. 27 browser), txtSchedules d41217c (67 + 50), Spaces 8386e83 (275 incl. 31 browser), Knowledge 11d2207 (shell only, 22), each merged to main after review; Help Desk df02303 proven (66 + browser), merge held until the owner restores the live roles' passwords its worker rotated; Consultant Tracking in progress; Inventory has no shell yet and will take it from the plugin.
+**Status (2026-10-09):** approved as recommended; step 1 BUILT and live (ProcessCore commit 99d978e: 46 HTTP checks, 19 browser checks); step 2 the plugin 0.8.0 BUILT the same day; step 3 the cidery LIVE (c4e1c64, 55 + 19); step 4 by Sonnet workers in worktrees the same day — Projects 159280d (80 + 23), HR 34ae1bd (76 + 18), GL fa3d7b0 (167 incl. 27 browser), txtSchedules d41217c (67 + 50), Spaces 8386e83 (275 incl. 31 browser), Knowledge 11d2207 (shell only, 22), each merged to main after review; Help Desk df02303 proven (66 + browser), merge held until the owner restores the live roles' passwords its worker rotated; Consultant Tracking c8f719e (97 + 26) merged; Inventory has no shell yet and will take it from the plugin.
 
 0. **This plan** — committed in the plugin repository (`docs/record-picker-plan.md`); the checkpoint.
 1. **ProcessCore, the exemplar** (`/srv/apps/processcore`): `app/picker.php` (`picker_field`, `picker_label`),
