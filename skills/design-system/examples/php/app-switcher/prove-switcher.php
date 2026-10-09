@@ -31,7 +31,7 @@ $base = rtrim(os_launcher_url(), '/');
 $hd = array_values(array_filter($feed['applications'], static fn ($a) => $a['key'] === 'helpdesk'))[0];
 $ok(str_contains($html, 'id="header-helpdesk-btn"') && str_contains($html, 'href="' . $base . '/launch/' . $hd['id'] . '"'), 'the Helpdesk button links to the launcher\'s /launch/<helpdesk id>');
 $ok(str_contains($html, 'id="header-apps-toggle"') && str_contains($html, 'id="header-apps-menu"'), 'the applications menu is there');
-$ok(str_contains($html, '<span class="dropdown-item active" id="header-apps-item-' . $current[0]['id'] . '"'), 'the current application is marked and not a link');
+$ok(str_contains($html, '<span class="dropdown-item active" id="header-apps-item-' . $current[0]['id']) && !str_contains($html, 'href="' . $base . '/launch/' . $current[0]['id'] . '"') && !str_contains($html, 'href="' . $base . '/launch/' . $current[0]['id'] . '?'), 'the current application is marked and not a link (its scopes too)');
 foreach ($feed['applications'] as $a) {
     if (!empty($a['current'])) { continue; }
     if (!empty($a['scopes'])) {

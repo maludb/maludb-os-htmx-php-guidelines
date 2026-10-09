@@ -21,7 +21,7 @@ $item = static function (array $a, ?array $scope = null): string {
     $id = 'header-apps-item-' . (int) $a['id'] . ($scope !== null ? '-' . (int) $scope['id'] : '');
     $label = e($a['name']) . ($scope !== null ? ' <span class="text-muted">· ' . e($scope['name']) . '</span>' : '');
     $icon = '<i class="' . e($a['icon'] ?? 'feather-grid') . '"></i>';
-    if (!empty($a['current']) && $scope === null) {
+    if (!empty($a['current'])) {            // this application — every row of it, a scoped one's sites too (its own site switcher changes the site)
         return '<span class="dropdown-item active" id="' . $id . '" aria-current="page">' . $icon . '<span>' . $label . '</span></span>';
     }
     return '<a href="' . e(os_launch_href(($scope ?? $a)['launch_path'])) . '" class="dropdown-item" id="' . $id . '">' . $icon . '<span>' . $label . '</span></a>';
