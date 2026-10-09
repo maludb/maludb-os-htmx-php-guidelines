@@ -93,6 +93,8 @@ the no-modal rule (D1).
 
 ## The build order
 
+**Status (2026-10-09):** approved as recommended; step 1 BUILT and live (ProcessCore commit 99d978e: 46 HTTP checks, 19 browser checks); step 2 the plugin 0.8.0 BUILT the same day; steps 3–4 next.
+
 0. **This plan** — committed in the plugin repository (`docs/record-picker-plan.md`); the checkpoint.
 1. **ProcessCore, the exemplar** (`/srv/apps/processcore`): `app/picker.php` (`picker_field`, `picker_label`),
    `app/pickers.php` (sources `supplier`, `item` with param `supplier_id`), `html/pick/index.php`,

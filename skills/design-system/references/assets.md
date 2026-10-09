@@ -21,8 +21,9 @@ Bottom JS (end of `<body>`, in this order):
 <script src="assets/vendors/js/vendors.min.js"></script>  <!-- 1. ALWAYS FIRST ("always must need to be top"): jQuery + Bootstrap + PerfectScrollbar + pace + nxlNavigation + full-screen-helper etc. -->
 <!-- 2. page-specific vendor JS here (see per-page table) -->
 <script src="assets/js/common-init.min.js"></script>          <!-- 3. shared shell init (required on every page) -->
-<!-- 4. page-specific init here, e.g. customers-init.min.js -->
-<script src="assets/js/theme-customizer-init.min.js"></script> <!-- 5. ALWAYS LAST: skins/dark-mode (also powers the header dark/light toggle) -->
+<script src="assets/js/record-picker.js"></script>          <!-- 4. the record picker (references/record-picker.md) — every page that has a form -->
+<!-- 5. page-specific init here, e.g. customers-init.min.js -->
+<script src="assets/js/theme-customizer-init.min.js"></script> <!-- 6. ALWAYS LAST: skins/dark-mode (also powers the header dark/light toggle) -->
 ```
 
 Ordering rules that matter:
@@ -62,6 +63,8 @@ Notes:
   responsive logo swap. Plus `assets/vendors/js/vendors.min.js` (which bundles
   `nxlNavigation.min.js`: sidebar accordion behavior, `#mobile-collapse` mobile drawer,
   PerfectScrollbar on `.navbar-content`).
+- Shared (every page): `assets/js/record-picker.js` — the record picker's modal (references/record-picker.md);
+  no init to re-run after a swap, it delegates from the document.
 - Shared (every page): `assets/js/theme-customizer-init.min.js` — reads/writes localStorage keys
   `app-skin` / `app-skin-dark` / `font-family` / `app-navigation` / `app-header` and applies them
   as classes on `<html>` (e.g. `app-skin-dark`, `app-font-family-inter`, `minimenu`).

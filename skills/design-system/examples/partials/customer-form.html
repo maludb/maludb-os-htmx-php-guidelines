@@ -127,6 +127,24 @@
                                         </div>
                                     </div>
                                 </div>
+                                <!-- A RECORD is chosen through the record picker (references/record-picker.md), never a <select>
+                                     that lists every row: the hidden input keeps the field's name and id; the button shows the
+                                     chosen label; the shell's one #record-picker modal searches GET /pick/?source=member. -->
+                                <div class="row mb-4 align-items-center" id="customer-form-field-account-manager-id-row">
+                                    <div class="col-lg-4">
+                                        <label id="customer-form-field-account-manager-id-label" for="customer-form-field-account-manager-id-open" class="fw-semibold">Account manager: </label>
+                                    </div>
+                                    <div class="col-lg-8">
+                                        <div class="input-group record-picker-field" id="customer-form-field-account-manager-id-picker"
+                                             data-picker-source="member" data-picker-title="People" data-picker-placeholder="Choose a person" data-picker-search="Search people…">
+                                            <input type="hidden" name="account_manager_id" id="customer-form-field-account-manager-id" value="" data-picker-value />
+                                            <button type="button" class="form-control text-start record-picker-open" id="customer-form-field-account-manager-id-open" aria-haspopup="dialog" aria-controls="record-picker"
+                                                    aria-labelledby="customer-form-field-account-manager-id-label customer-form-field-account-manager-id-open"><span class="record-picker-label text-muted">Choose a person</span></button>
+                                            <button type="button" class="btn btn-light-brand record-picker-clear d-none" id="customer-form-field-account-manager-id-clear" aria-label="Clear"><i class="feather-x"></i></button>
+                                            <button type="button" class="btn btn-light-brand record-picker-search-btn" id="customer-form-field-account-manager-id-search-btn" aria-label="Search"><i class="feather-search"></i></button>
+                                        </div>
+                                    </div>
+                                </div>
                                 <div class="row mb-4 align-items-center" id="customer-form-field-status-row">
                                     <div class="col-lg-4">
                                         <label id="customer-form-field-status-label" for="customer-form-field-status" class="fw-semibold">Status: </label>

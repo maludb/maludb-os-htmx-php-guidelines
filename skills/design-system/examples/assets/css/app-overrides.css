@@ -134,3 +134,20 @@ html.app-skin-dark .assistant-reply { background: #121a2d; border-color: #19253f
     .page-header-form .page-header-unsaved { font-size: 0; padding: 6px; }
     .page-header-form .page-header-unsaved i { font-size: 14px; margin-right: 0 !important; }
 }
+
+/* RECORD PICKER (app/picker.php, shared/picker-rows.php, assets/js/record-picker.js): the one modal that chooses a
+   record. The field's button reads as a form control and truncates; the modal keeps its search box pinned, holds a
+   steady height on a desktop and fills the screen on a phone; rows are touch targets with a visible scrollbar. */
+.record-picker-field .record-picker-open { display: flex; align-items: center; min-width: 0; cursor: pointer; }
+.record-picker-field .record-picker-open .record-picker-label { flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.record-picker-field .record-picker-open:disabled { cursor: default; opacity: 1; }
+#record-picker .record-picker-search { position: sticky; top: 0; z-index: 2; background: var(--bs-modal-bg, #fff); }
+html.app-skin-dark #record-picker .record-picker-search { background: #0f172a; }
+#record-picker .record-picker-row { min-height: 44px; padding-top: .625rem; padding-bottom: .625rem; }
+#record-picker .record-picker-row.active .record-picker-detail, #record-picker .record-picker-row.active .badge { color: inherit !important; }
+#record-picker .record-picker-detail { color: var(--bs-secondary-color); }
+#record-picker-results { min-height: 160px; }
+@media (min-width: 768px) {
+    #record-picker .modal-dialog { max-width: 560px; }
+    #record-picker .modal-content { height: 70vh; }
+}

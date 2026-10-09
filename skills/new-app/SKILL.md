@@ -76,9 +76,9 @@ this repository alone.
 Goal: at the end of this phase the application *looks and feels exactly like the finished product*, with working login, even though it has no features yet.
 
 1. **OS application:** build the kernel's sign-on instead of a login — `/sso` and `/sso/logout` from `php-sign-on-kit.md`, the directory mirror and its one-minute sync, the per-request guard, `/api/v1/health`, and `deploy/` templates; prove it with `bin/dev_handoff.php` (os-application). **Standalone product only:** build session auth (register, login, logout, reset) in vanilla PHP following the **php-session-auth** skill — all of its non-negotiables apply. The login page offers email/password **and** "Sign in with Google" (server-side OIDC per `references/google-signin.md`); authenticator-app 2FA (per `references/totp-2fa.md`) ships with its enrollment settings page and login challenge page. CSRF is wired for HTMX from the first shell render (meta tag + `htmx:configRequest` listener). Reset and verification emails go through the **malumail-send** skill's `malumail_send()` helper. Auth pages use the design-system minimal auth layout; login/logout/2FA are full page navigations, never swaps.
-2. Build the application shell from the **design-system** skill: the sidebar/header/footer layout, the HTMX content-swap target, an empty dashboard, the navigation stubs for every planned feature, and the **assistant command bar** (`#assistant-bar`, per chat-actions, with Send shown only while the bar is in use) wired to a stub handler so the surface exists from the first screen. Ship the shell's form guard script and the shared page-header partial that marks form headers `page-header-form` (design-system) now, so every slice's forms get the pinned Save and the unsaved-changes prompt for free.
+2. Build the application shell from the **design-system** skill: the sidebar/header/footer layout, the HTMX content-swap target, an empty dashboard, the navigation stubs for every planned feature, and the **assistant command bar** (`#assistant-bar`, per chat-actions, with Send shown only while the bar is in use) wired to a stub handler so the surface exists from the first screen. Ship the shell's form guard script and the shared page-header partial that marks form headers `page-header-form` (design-system) now, so every slice's forms get the pinned Save and the unsaved-changes prompt for free. Ship the **record picker** now too (design-system `references/record-picker.md`: the `#record-picker` modal in the layout, `record-picker.js`, `app/picker.php`, an empty `app/pickers.php`, `html/pick/index.php`, `shared/picker-rows.php`) — every slice's forms choose records through it.
 3. Wire activity logging into the shell from the first request: page entry, login/logout events.
-4. Verify on a mobile viewport (375px): navigation collapses correctly, no horizontal scroll, no modals anywhere.
+4. Verify on a mobile viewport (375px): navigation collapses correctly, no horizontal scroll, no modals anywhere but the record picker's.
 
 **Checkpoint:** user reviews the running shell (desktop and mobile) and confirms the look and feel before Phase 3.
 
@@ -125,7 +125,8 @@ Four rules make worker-built slices safe:
 ### Per-slice conformance checklist (mechanically checkable)
 
 - Zero `hx-push-url="true"` — every `hx-push-url` value is an explicit canonical URL
-- Zero `.modal` usage; `hx-confirm` appears only on destructive controls
+- Zero `.modal` usage in the slice (the shell's `#record-picker` is the one modal); `hx-confirm` appears only on destructive controls
+- Zero `<select>` whose options are a table with a list screen: those fields are record pickers under the field's old name and id, each with a source in `app/pickers.php` over the feature's `find_*()` query (design-system `record-picker.md`)
 - Zero `stretch` / `stretch-full` classes on cards
 - All ids follow the kebab-case scheme (`{entity}-list-*`, `{entity}-form-field-*`, `{entity}-row-{id}-*`); no duplicates in any composed DOM
 - Every state-changing endpoint: `require_post()` + `verify_csrf()` + authorization check + `log_activity()`

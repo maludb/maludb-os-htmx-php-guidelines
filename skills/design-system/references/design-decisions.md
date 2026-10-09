@@ -82,13 +82,24 @@ Two adjacent rules:
 - Partials carry their own `.page-header` + `.main-content` and swap the whole `#page-content` (`.nxl-content`) region; search/pagination refresh only the results region within the screen.
 - **Login/logout are full page navigations, never HTMX swaps** — session regeneration and the post-login redirect need a real navigation (see php-session-auth).
 
+## Choosing a record: the picker, not a select (DECIDED 2026-10-09)
+
+A `<select>` is for an enumeration or a short configuration list (status, kind, priority, unit, a handful of sites or
+departments). A **record** — anything a person adds rows to without limit: suppliers, customers, items, lots, accounts, people,
+projects, tickets, pages — is chosen through the **record picker**: a hidden input under the field's name and id, a button
+showing the chosen label, and the shell's one `#record-picker` modal with a search box over `GET /pick/?source=`. Mechanical
+test: if the options come from a table with its own CRUD list screen, it is a picker. The component, its contracts and the
+retrofit steps are `record-picker.md`; the exemplar is ProcessCore's purchase order. Single value in v1; the first page in the
+source's own order with the chosen row marked; creating a record from the picker opens the screen's inline panel or the create
+page, never a form in the modal.
+
 ## Scrollbars: always visible
 
 The theme's stock scrollbars (5px, near-invisible thumb, some hidden outright) are overridden by the sanctioned `assets/css/app-overrides.css`, loaded after `theme.min.css` on every page: 12px grabbable scrollbars with contrasting thumbs in light and dark mode. Never hide a scrollbar (`scrollbar-width: none`, `::-webkit-scrollbar { display: none }`) and never `overflow: hidden` on a content panel — fixed-height panels get `overflow-y: auto` and show their scrollbar.
 
 ## Interaction defaults (recap of plugin-wide rules)
 
-- Create/edit/detail: dedicated full pages via HTMX (`hx-get` + `hx-push-url` into the shell's swap target). No modal forms or display panels. The no-modal rule does **not** cover confirmations: destructive actions use `hx-confirm`.
+- Create/edit/detail: dedicated full pages via HTMX (`hx-get` + `hx-push-url` into the shell's swap target). No modal forms or display panels. The no-modal rule has **two exemptions**: confirmations (destructive actions use `hx-confirm`) and the **record picker** (`record-picker.md`), the one `.modal` in the shell, which only chooses a record and closes.
 - Quick single-field edits: inline swap. Filters/quick views only: offcanvas, full-width on mobile.
 - Form save/cancel buttons live in the page header (`.page-header-right-items-wrapper`); forms use the `col-lg-4` label / `col-lg-8` control horizontal grid with `input-group` icon prefixes.
 - Form headers are pinned (`page-header-form`): Cancel/Save stay in view at the top while the form scrolls, inline on phones; editing shows "Unsaved changes" and leaving asks first. No second Save at the bottom of a form.

@@ -369,6 +369,26 @@ From customers-create.html.
 Note: `card border-top-0` is used when the tabs strip is the card header;
 each `.nav-item` carries `flex-fill border-top` so tabs span the full card width.
 
+## Record picker field (choosing a record — never a `<select>` of every row)
+
+A form chooses a record (supplier, customer, item, person — anything with its own list screen) through the record picker:
+a hidden input under the field's name and id, a button styled as the control showing the chosen label, and the shell's one
+`#record-picker` modal with a search box. Markup, ids, the endpoint and registry contracts, the helper's options and the
+retrofit steps: **[record-picker.md](record-picker.md)**. A `<select>` remains for enumerations and short configuration lists.
+
+```html
+<div class="row mb-4 align-items-center" id="order-form-field-supplier-id-row">
+    <div class="col-lg-4"><label id="order-form-field-supplier-id-label" for="order-form-field-supplier-id-open" class="fw-semibold">Supplier: </label></div>
+    <div class="col-lg-8">
+        <div class="input-group record-picker-field" id="order-form-field-supplier-id-picker" data-picker-source="supplier" data-picker-title="Suppliers" data-picker-placeholder="Choose a supplier" data-picker-search="Search suppliers…">
+            <input type="hidden" name="supplier_id" id="order-form-field-supplier-id" value="" data-picker-value />
+            <button type="button" class="form-control text-start record-picker-open" id="order-form-field-supplier-id-open" aria-haspopup="dialog" aria-controls="record-picker"><span class="record-picker-label text-muted">Choose a supplier</span></button>
+            <button type="button" class="btn btn-light-brand record-picker-search-btn" id="order-form-field-supplier-id-search-btn" aria-label="Search"><i class="feather-search"></i></button>
+        </div>
+    </div>
+</div>
+```
+
 ## Detail/view page pattern
 
 Usage: two-column split — left `col-xxl-4 col-xl-6` stack of profile/info cards, right

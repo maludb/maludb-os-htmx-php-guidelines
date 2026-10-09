@@ -35,7 +35,7 @@ bootstrap → authenticate/authorize → read input → validate
 
 | Pattern | Use for |
 |---|---|
-| A — dedicated fragment endpoint | Dropdown options, search results, table bodies, dashboard widgets |
+| A — dedicated fragment endpoint | Dropdown options, search results, table bodies, dashboard widgets — and the record picker's rows (`html/pick/index.php` over `app/pickers.php`; design-system `record-picker.md`) |
 | B — dual full-page/partial endpoint (`is_htmx_request()` + `Vary: HX-Request`) | Index/list screens, pagination, filters, sortable tables — the default for navigable screens |
 | C — replace nearest component (`hx-target="closest tr"`) | Row delete, status toggle, inline edit, expanding details |
 | D — server-triggered refresh (`HX-Trigger` event + listening region) | Cross-component updates after saves — the default over manual targeting |

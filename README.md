@@ -35,7 +35,7 @@ Ubuntu 24.04 · PostgreSQL 17 + MaluDB (activity memory) · three MCP servers pe
 | `new-app` | The phased build workflow: memory-first planning → full database + memory design (surveying the sibling applications' schemas first — one data model across the estate) → auth + app shell → vertical feature slices → Ask Me Anything |
 | `new-screen` | Generates each screen from the design system so consistency holds screen-to-screen |
 | `mcp-servers` | The two MCP servers every app ships (record + activity memory): tool-surface design, FastMCP implementation, deployment, client-facing auth |
-| `design-system` | The mandatory UI template distilled into layout skeletons, component patterns, and mobile rules |
+| `design-system` | The mandatory UI template distilled into layout skeletons, component patterns, and mobile rules — and the **record picker**, the searchable modal through which a form chooses a record instead of a `<select>` of every row (`references/record-picker.md`, PHP in `examples/php/record-picker/`) |
 | `php-patterns` | The mandatory PHP code structure (readable/maintainable for humans and agents) |
 | `memory-first-planning` | Memory-first design, ask-me-anything, SaaS Plus+, the two-memory architecture |
 | `php-session-auth` | Security rules for vanilla PHP session auth + CSRF, Google sign-in, TOTP 2FA |

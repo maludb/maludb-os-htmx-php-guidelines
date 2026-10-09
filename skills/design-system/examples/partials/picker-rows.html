@@ -1,0 +1,19 @@
+<!-- What GET /pick/?source=member&q=ma answers (shared/picker-rows.php): the rows the record picker swaps into #record-picker-results.
+     First page: the list wrapper, rows, the chosen row active, "Show more" when more pages exist. A later page: rows only.
+     Empty: <div class="record-picker-empty p-4 text-center text-muted" id="record-picker-empty">No person matches “zz”.</div>
+     Refused: the same div with id="record-picker-error" and the reason, under a 403/404. -->
+<div class="list-group list-group-flush" id="record-picker-list" role="listbox">
+    <button type="button" class="list-group-item list-group-item-action record-picker-row" id="record-picker-row-14" role="option" aria-selected="false" data-value="14" data-label="Maria Alvarez">
+        <div class="d-flex justify-content-between align-items-center gap-2">
+            <div class="min-w-0"><div class="fw-semibold text-truncate">Maria Alvarez</div><div class="fs-11 text-truncate record-picker-detail">Sales · maria@example.test</div></div>
+        </div>
+    </button>
+    <button type="button" class="list-group-item list-group-item-action record-picker-row active" id="record-picker-row-7" role="option" aria-selected="true" data-value="7" data-label="Mark Osei">
+        <div class="d-flex justify-content-between align-items-center gap-2">
+            <div class="min-w-0"><div class="fw-semibold text-truncate">Mark Osei</div><div class="fs-11 text-truncate record-picker-detail">Front Office · mark@example.test</div></div>
+            <span class="badge bg-soft-secondary text-secondary flex-shrink-0">On leave</span>
+        </div>
+    </button>
+    <button type="button" class="list-group-item list-group-item-action text-center text-primary record-picker-more" id="record-picker-more"
+            hx-get="/pick/?source=member&amp;q=ma&amp;selected=7&amp;page=2" hx-target="this" hx-swap="outerHTML"><i class="feather-chevron-down me-1"></i>Show more — 25 of 41 shown</button>
+</div>
