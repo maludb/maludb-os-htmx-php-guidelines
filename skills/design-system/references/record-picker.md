@@ -114,6 +114,33 @@ buttons `-clear` and `-search-btn`; the row label `-label` points its `for` at `
 4. Prove it with the slice: the endpoint's refusals, search, paging, the dependent param; the form's first render, a 422
    re-render keeping the label, a save through the hidden input. ProcessCore's `scripts/prove-picker.sh` is the model (46 checks).
 
+## What the retrofits taught (2026-10-09 — eight applications in one day)
+
+The contract bends in these places, and only these; every bend is written into the application's `app/pickers.php` comment:
+
+- **The gate.** An application without a flat role column (Help Desk, GL, Knowledge — rights; HR, txtSchedules, Spaces — a test
+  per source) replaces `roles` with `rights => [...]` (any one admits, through its `has_right()`) or a `gate => fn(array $user,
+  array $params): bool` closure that applies the SAME test as the screens that use the field. The endpoint calls whichever the
+  source carries. A people source in a scoped application takes the site/space/project as a declared param and the gate fails
+  for one the caller does not hold.
+- **Keys that are not integers.** Where records are UUIDs (Spaces' pages and databases), `params` is `name => 'int'|'uuid'` and
+  the endpoint validates each by type; `selected` and `label()` accept the same. Integers everywhere else.
+- **Paging.** When the feature's list query is un-paged or computes balances per row (HR, GL, Spaces), the source gets its own
+  light paged query over the same view and the same ILIKE, or pages the list in PHP; a picker never runs the list screen's
+  heavy query.
+- **4xx into the modal.** If the shell's `htmx-config` swaps no 4xx but 422, a `htmx:beforeSwap` hook in the layout swaps 403/404
+  into `#record-picker-results` only (GL), so refusals still show inside the dialog.
+- **Labels.** A hand-written form's `<label for>` must move to `{id}-open`, or clicking the label does nothing (the hidden input
+  cannot take focus). Pass `labelledby` so the opener has an accessible name.
+- **Sentinels.** "Me", "Nobody", "Unassigned", "Keep" are not records: a select that offers them stays a select (Help Desk, Projects
+  filters and bulk forms), or the source puts the caller first as a "You" row when the old select offered "Me" (txtSchedules'
+  `self=1`). Multiple selects, arrays of selects per row and trees shown by indentation stay selects.
+- **No JavaScript.** The picker needs it; a plain form cannot set the hidden input. Accepted for these applications; a no-JS proof
+  pre-selects by query string.
+- **Native `required` is lost** on a hidden input: the handler's own refusal does the stopping, as it always had to.
+- **Scratch installs.** Several applications' `tests/setup_dev.sh` rewrite the database roles' passwords when the checkout has no
+  `config/.env` — and the roles are SHARED with the live install. Put the scratch `config/.env` in place before any proof runs.
+
 ## Retrofitting an existing application
 
 1. Add the files of step 1–2 above (the shell and bootstrap change once). Applications without `form_row_open()` skip
