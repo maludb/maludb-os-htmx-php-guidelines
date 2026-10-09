@@ -58,7 +58,7 @@ function picker_field(array $spec): string
     if ($value !== '' && $label === null) {
         $value = '';                                         // an id that names nothing is no choice
     }
-    $placeholder = (string) ($spec['placeholder'] ?? ('Choose ' . ($source['noun'] === 'item' ? 'an' : 'a') . ' ' . $source['noun']));
+    $placeholder = (string) ($spec['placeholder'] ?? ('Choose ' . (preg_match('/^[aeiou]/i', $source['noun']) ? 'an' : 'a') . ' ' . $source['noun']));
     $required = !empty($spec['required']);
     $disabled = !empty($spec['disabled']);
     $data = ' data-picker-source="' . e($spec['source']) . '" data-picker-title="' . e($spec['title'] ?? $source['title']) . '"'
